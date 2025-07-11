@@ -212,3 +212,69 @@
     \end{column}
   \end{columns}
 \end{splitframe}
+
+
+\secslide{Code Quality}
+
+\secslide{Testing}
+
+\begin{frame}{When Do We Need Tests?}
+  \begin{center}
+    \huge\textcolor{ccyan!90!cblack}{Imagine the following\dots}
+  \end{center}
+  \begin{itemize}
+    \item You have written a package with a lot of code, \eg, multiple scripts
+    \item You found a bug somewhere in your code
+    \item You have not thought of possible edge cases during development
+  \end{itemize}
+  \vspace{1em}
+  \begin{center}
+    \huge\textcolor{cpink!90!cblack}{\to{} You will need to investigate your codebase for
+    causes of the bug and the same bug may appear some time later}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Solution}
+  \begin{center}
+    \huge\textcolor{ccyan!90!cblack}{Write persistent tests \textbf{during development}!}\\
+    \uncover<2>{\huge\textcolor{ccyan!90!cblack}{(And \textbf{automate} them \to{} see CI)}}
+  \end{center}
+\end{frame}
+
+\secslide{Documentation}
+
+\begin{frame}{Why Should We Document Our Code?}
+  \begin{center}
+    \huge\textcolor{ccyan!90!cblack}{Well documented code improves\dots}
+  \end{center}
+  \begin{itemize}
+    \item Maintainability: Future developers, debugging, \dots
+    \item Accessibility: Make your package easier to understand for new users
+    \item Collaboration: Docs as a shared knowledge source
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Tool Of Choice: Sphinx}
+  \begin{columns}[t, onlytextwidth]
+    \begin{column}{0.68\textwidth}
+      \begin{itemize}
+        \setlength{\itemsep}{1em}
+        \item FOSS, extensible documentation generator written in Python
+        \item Multiple output formats: \texttt{HTML}, \LaTeX, ePub, and more\dots
+        \item Content is written using a mark-up language (\texttt{reST} or \texttt{MyST})
+        \item Support for various docstring formats (some through extensions)
+        \item Install via pip or mamba:
+          \begin{minted}{text}
+            $ pip install sphinx
+            $ mamba install sphinx
+          \end{minted}
+      \end{itemize}
+    \end{column}
+    \hfill
+    \begin{column}{0.38\textwidth}
+      \begin{center}
+      \includegraphics[width=10cm]{logos/sphinx-logo.pdf}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
