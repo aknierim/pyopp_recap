@@ -72,6 +72,8 @@
   shapes,
 }
 
+\usepackage[edges]{forest}
+
 \usepackage[
   shortcuts,
 ]{extdash}
@@ -91,6 +93,39 @@
      decorate
    }
 }
+
+\forestset{
+  textfile/.style = {
+    execute at begin node=\textcolor{cblack}{\faFile*}\space
+  },
+  batchfile/.style = {
+    execute at begin node=\textcolor{cblack}{\faTerminal}\space
+  },
+  makefile/.style = {
+    execute at begin node=\textcolor{cblack}{\faFile}\space
+  },
+  pythonfile/.style = {
+    execute at begin node=\textcolor{cblack}{\faPython}\space
+  },
+  opened/.style = {execute at begin node=\textcolor{dircolor}{\faFolderOpen}\space},
+  closed/.style = {execute at begin node=\textcolor{dircolor}{\faFolder}\space},
+  dir tree/.style = {
+    grow'=0,
+    font=\ttfamily,
+    folder,
+    fit=band,
+    s sep=5pt,
+    before computing xy={l=20pt},
+    edge={rounded corners=2pt},
+  },
+  visible on/.style={
+    % for tree={
+    /tikz/visible on={#1},
+    for children={
+      edge={/tikz/visible on={#1}}}
+    },
+}
+
 
 % This adds a circle with a picture of your choice in it.
 % Usage:
@@ -131,3 +166,72 @@
   }
 }
 
+% icon href
+\NewDocumentCommand \iref { m m } {%
+  \href{#1}{{\footnotesize{\faExternalLink*}}\,\texttt{#2}}
+}
+
+\NewDocumentCommand \cpp {} {%
+  C\nolinebreak\hspace{-.05em}\raisebox{.1ex}{\texttt{+}}\nolinebreak\hspace{-.10em}\raisebox{.1ex}{\texttt{+}}
+}
+
+\NewDocumentCommand \src { m O{cblack!50!cwhite} } {
+  {\tiny\textcolor{#2}{[#1]}}
+}
+
+
+
+\xdefinecolor{dircolor}{HTML}{f0c481}
+
+
+\ExplSyntaxOn
+
+\RenewDocumentEnvironment {block} {m o} {
+  \IfValueTF{#2}{
+    \begin{tcolorbox}[
+      adjusted~title=#1,
+      #2,
+    ]
+  }{
+    \begin{tcolorbox}[
+      adjusted~title=#1,
+    ]
+  }
+}{
+  \end{tcolorbox}
+}
+
+\RenewDocumentEnvironment {alertblock} {m o} {
+  \IfValueTF{#2}{
+    \begin{tcolorbox}[
+      adjusted~title=#1,
+      colframe=alertred,
+      #2,
+    ]
+  }{
+    \begin{tcolorbox}[
+      adjusted~title=#1,
+      colframe=alertred,
+    ]
+  }
+}{
+  \end{tcolorbox}
+}
+
+\RenewDocumentEnvironment {exampleblock} {m o} {
+  \IfValueTF{#2}{
+    \begin{tcolorbox}[
+      adjusted~title=#1,
+      colframe=blue!80!black,
+      #2,
+    ]
+  }{
+    \begin{tcolorbox}[
+      adjusted~title=#1,
+      colframe=blue!80!black,
+    ]
+  }
+}{
+  \end{tcolorbox}
+}
+\ExplSyntaxOff
