@@ -12,9 +12,27 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Before We Start: Package and Environment Managers}
+  \begin{description}
+    \setlength{\itemsep}{1em}
+    \item [\iref{https://pypi.org/project/pip/}{pip}] The standard package installer for Python. \texttt{pip} is able to install
+      directly from PyPI and other indexes.
+    \item [\iref{https://mamba.readthedocs.io/en/latest/}{mamba}] Fast and robust, with cross-platform support. Written in \cpp.
+      Allows you to manage multiple, isolated environments. \texttt{mamba} installs from local or remote package repositories, \eg, channels.
+    \item [\iref{https://python-poetry.org/}{poetry}] Package installer that is also able to create its own virtual environments.
+      Handles dependency resolving better than pip. Works nicely with \texttt{pyproject.toml} files. Allows the use of lock files.
+    \item [\iref{https://docs.astral.sh/uv/}{uv}] A new and fast package manager written in {\footnotesize{\faRust}}\,\texttt{Rust}. Can create
+      virtual environments, and solves dependencies better and faster than pip. Allows the use of lock files.
+  \end{description}
+  \begin{center}
+    \includegraphics[width=0.7\textwidth]{graphics/speed.pdf}
+    \src{docs.astral.sh/uv}
+  \end{center}
+\end{frame}
+
 \begin{frame}[fragile]{How Do I Create a Package?}
   \begin{center}
-    \huge\textcolor{ccyan!90!cblack}{\textbf{There does not exist \enquote{the one way} to create packages, but\dots}}
+    \huge\textcolor{ccyan!90!cblack}{\textbf{There is not \enquote{just one way} to create packages, but\dots}}
   \end{center}
   \vspace{1em}
   \begin{itemize}
@@ -26,8 +44,8 @@
       \item [\mintinline{toml}{[tool]}] A section for tool configuration.
     \end{description}
     \item An easy way to set up that scaffolding: \href{https://hatch.pypa.io/latest/}{{\footnotesize{\faExternalLink*}}\,\texttt{hatch}}
-      \begin{minted}{shell}
-        $ pip install hatch
+      \begin{minted}{shell-session}
+        $ uv pip install hatch
         $ mamba install hatch
       \end{minted}
   \end{itemize}
@@ -38,7 +56,7 @@
     \begin{column}{0.58\textwidth}
       \begin{itemize}
         \item Use \textcolor{cpink}{\texttt{hatch}}'s CLI tool to quickstart creating a package:
-          \begin{minted}{shell}
+          \begin{minted}{shell-session}
             $ hatch new my_package
           \end{minted}
       \end{itemize}
@@ -65,11 +83,11 @@
       \begin{itemize}
         \setlength{\itemsep}{1em}
         \item Let's see what this created:
-          \begin{minted}{shell}
+          \begin{minted}{shell-session}
             $ head my_package/pyproject.toml
           \end{minted}
         \item You can also upgrade an existing project to use \texttt{hatch}:
-          \begin{minted}{shell}
+          \begin{minted}{shell-session}
             $ hatch new --init
           \end{minted}
         \item Have a look at the \href{https://packaging.python.org/en/latest/guides/writing-pyproject-toml/}{{\footnotesize{\faExternalLink*}}\,Writing your \texttt{pyproject.toml}}
@@ -124,8 +142,8 @@
         \item Define your optional dependencies in the \texttt{[project.optional-dependencies]} section
           and group them
         \item Install optional dependencies using
-          \begin{minted}{shell}
-            $ pip install my_package[plot]
+          \begin{minted}{shell-session}
+            $ uv pip install my_package[plot]
           \end{minted}
       \end{itemize}
     \end{column}
@@ -145,8 +163,8 @@
         \item Fairly new (accepted \texttt{2024-10-10}): \href{https://peps.python.org/pep-0735/}{{\footnotesize{\faExternalLink*}}\,\texttt{PEP 735}} Dependency Groups
         \item Optional dependencies that are \emph{not} installed when a \emph{user} installs the package, \eg, via PyPI
         \item Install the groups from within your source repo:
-          \begin{minted}{shell}
-            $ pip install --group dev
+          \begin{minted}{shell-session}
+            $ uv pip install --group dev
           \end{minted}
       \end{itemize}
     \end{column}
@@ -205,8 +223,8 @@
       \begin{center}
         \huge\textcolor{cpink}{\texttt{\textbf{Result}}}
       \end{center}
-      \begin{minted}{toml}
-        $ hello-world
+      \begin{minted}[escapeinside=||]{toml}
+        |\textbf{\textcolor{cpink}{\$}}| hello-world
         Hello World!
       \end{minted}
     \end{column}
@@ -241,40 +259,4 @@
   \end{center}
 \end{frame}
 
-\secslide{Documentation}
 
-\begin{frame}{Why Should We Document Our Code?}
-  \begin{center}
-    \huge\textcolor{ccyan!90!cblack}{Well documented code improves\dots}
-  \end{center}
-  \begin{itemize}
-    \item Maintainability: Future developers, debugging, \dots
-    \item Accessibility: Make your package easier to understand for new users
-    \item Collaboration: Docs as a shared knowledge source
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Tool Of Choice: Sphinx}
-  \begin{columns}[t, onlytextwidth]
-    \begin{column}{0.68\textwidth}
-      \begin{itemize}
-        \setlength{\itemsep}{1em}
-        \item FOSS, extensible documentation generator written in Python
-        \item Multiple output formats: \texttt{HTML}, \LaTeX, ePub, and more\dots
-        \item Content is written using a mark-up language (\texttt{reST} or \texttt{MyST})
-        \item Support for various docstring formats (some through extensions)
-        \item Install via pip or mamba:
-          \begin{minted}{text}
-            $ pip install sphinx
-            $ mamba install sphinx
-          \end{minted}
-      \end{itemize}
-    \end{column}
-    \hfill
-    \begin{column}{0.38\textwidth}
-      \begin{center}
-      \includegraphics[width=10cm]{logos/sphinx-logo.pdf}
-      \end{center}
-    \end{column}
-  \end{columns}
-\end{frame}
