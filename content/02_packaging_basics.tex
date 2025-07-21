@@ -1,0 +1,271 @@
+\secslide[\fontsize{1.3cm}{1.3cm}\selectfont]{Packaging: The Basics}
+
+
+\begin{frame}{What Even is a Package?}
+  \begin{description}[\texttt{Distribution Package}]
+    \setlength{\itemsep}{1.5em}
+    \item [\texttt{Import Package}] Any Python module that you can \emph{import} using the \mintinline{python}+import+
+      statement.
+    \item [\texttt{Namespace Package}] Packages that allow you to \emph{unify} two packages with the \emph{same} name.
+    \item [\texttt{Distribution Package}] An archive containing a \emph{collection} of import packages combined with
+      \emph{metadata} such as dependencies.
+  \end{description}
+  \vspace{1cm}
+  \uncover<2>{
+  \begin{center}
+    \huge\textcolor{ccyan}{When people talk about packages, they usually mean \textbf{distribution packages.}}
+  \end{center}
+  }
+\end{frame}
+
+\begin{darkframe}{How Does Python Find Installed Packages?}
+  \begin{center}
+  \huge\textcolor{ccyan}{Example: NumPy}
+  \end{center}
+  \vspace{0.5cm}
+  \begin{minted}{shell-session}
+    $ python -c "import numpy; print(numpy.__path__[0])"
+    /home/anno/.local/conda/envs/pyopp_recap/lib/python3.12/site-packages/numpy
+
+    $ ls -C $(python -c "import numpy; print(numpy.__path__[0])") | sort
+    _array_api_info.py     doc		      __init__.py	 py.typed
+    _array_api_info.pyi    dtypes.py	      __init__.pyi	 random
+    char		      dtypes.pyi	      lib		 rec
+    __config__.py	      exceptions.py	      linalg		 strings
+    __config__.pyi	      exceptions.pyi	      ma		 testing
+    _configtool.py	      _expired_attrs_2_0.py   matlib.py	 tests
+    _configtool.pyi        _expired_attrs_2_0.pyi  matlib.pyi	 _typing
+    conftest.py	      f2py		      matrixlib	 typing
+    _core		      fft		      polynomial	 _utils
+    core		      _globals.py	      __pycache__	 version.py
+    ctypeslib	      _globals.pyi	      _pyinstaller	 version.pyi
+    _distributor_init.pyi  __init__.pxd	      _pytesttester.pyi
+    _distributor_init.py   __init__.cython-30.pxd  _pytesttester.py
+  \end{minted}
+\end{darkframe}
+
+
+\begin{frame}[fragile]{How Do I Create a Package?}
+  \begin{center}
+    \huge\textcolor{ccyan!90!cblack}{\textbf{There is not \enquote{just one way} to create packages, but\dots}}
+  \end{center}
+  \vspace{1em}
+  \begin{itemize}
+    \setlength{\itemsep}{1em}
+    \item Modern packaging uses a scaffolding called \texttt{pyproject.toml} with three important sections:
+    \begin{description}[\texttt{[build-system]}]
+      \item [\mintinline{toml}{[build-system]}] Allows you to describe what build backend to use.
+      \item [\mintinline{toml}{[project]}] Sets up metadata for the package, such as the name or version.
+      \item [\mintinline{toml}{[tool]}] A section for tool configuration.
+    \end{description}
+    \item An easy way to set up that scaffolding: \href{https://hatch.pypa.io/latest/}{{\footnotesize{\faExternalLink*}}\,\texttt{hatch}}
+      \begin{minted}{shell-session}
+        $ uv pip install hatch
+        $ mamba install hatch
+      \end{minted}
+  \end{itemize}
+\end{frame}
+
+\begin{splitframe}[fragile]{How Do I Create a Package?}{Output}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}
+        \item Use \textcolor{cpink}{\texttt{hatch}}'s CLI tool to quickstart creating a package:
+          \begin{minted}{shell-session}
+            $ hatch new my_package
+          \end{minted}
+      \end{itemize}
+    \end{column}
+    \hfill
+    \begin{column}{0.38\textwidth}
+      \begin{minted}{toml}
+        my_package
+        ├── src
+        │   └── my_package
+        │       ├── __about__.py
+        │       └── __init__.py
+        ├── tests
+        │   └── __init__.py
+        ├── LICENSE.txt
+        ├── README.md
+        └── pyproject.toml
+      \end{minted}
+    \end{column}
+  \end{columns}
+  \vspace{1em}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}
+        \setlength{\itemsep}{1em}
+        \item Let's see what this created:
+          \begin{minted}{shell-session}
+            $ head my_package/pyproject.toml
+          \end{minted}
+        \item You can also upgrade an existing project to use \texttt{hatch}:
+          \begin{minted}{shell-session}
+            $ hatch new --init
+          \end{minted}
+        \item Have a look at the \href{https://packaging.python.org/en/latest/guides/writing-pyproject-toml/}{{\footnotesize{\faExternalLink*}}\,Writing your \texttt{pyproject.toml}}
+          guide to learn how to customise the \texttt{pyproject.toml} file
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \begin{minted}{toml}
+        [build-system]
+        requires = ["hatchling"]
+        build-backend = "hatchling.build"
+
+        [project]
+        name = "my_package"
+        dynamic = ["version"]
+        description = ''
+        readme = "README.md"
+        requires-python = ">=3.8"
+      \end{minted}
+    \end{column}
+  \end{columns}
+\end{splitframe}
+
+\begin{splitframe}[fragile]{Dependencies}{Example}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}
+        \setlength{\itemsep}{1em}
+        \item Dependencies for your project are defined with the \texttt{dependencies}
+          key inside the \texttt{[project]} section
+        \item You can set \href{https://packaging.python.org/en/latest/specifications/dependency-specifiers/}{{\footnotesize{\faExternalLink*}}\,dependency specifiers}
+          (aka constraints) such as versions
+      \end{itemize}
+    \end{column}
+    \hfill
+    \begin{column}{0.38\textwidth}
+      \begin{minted}{toml}
+        [project]
+        dependencies = [
+          "numpy",
+          "astropy<=6.1.0",
+          "tomli;python_version<'3.11'",
+        ]
+      \end{minted}
+    \end{column}
+  \end{columns}
+  \vspace{1em}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}
+        \setlength{\itemsep}{1em}
+        \item Define your optional dependencies in the \texttt{[project.optional-dependencies]} section
+          and group them
+        \item Install optional dependencies using
+          {
+          \usemintedstyle{code-light}
+          \begin{minted}{shell-session}
+            $ uv pip install my_package[plot]
+            $ uv pip install "my_package[plot]"
+          \end{minted}
+          }
+      \end{itemize}
+    \end{column}
+    \hfill
+    \begin{column}{0.38\textwidth}
+      \begin{minted}{toml}
+        [project.optional-dependencies]
+        plot = ["matplotlib"]
+      \end{minted}
+    \end{column}
+  \end{columns}
+  \vspace{1em}
+\end{splitframe}
+
+\begin{splitframe}[fragile]{Dependency Groups}{Example}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}
+        \setlength{\itemsep}{1em}
+        \item Fairly new (accepted \texttt{2024-10-10}): \href{https://peps.python.org/pep-0735/}{{\footnotesize{\faExternalLink*}}\,\texttt{PEP 735}} Dependency Groups
+        \item Optional dependencies that are \emph{not} installed when a \emph{user} installs the package, \eg, via PyPI
+          \begin{itemize}
+            \item [\to] Prevent users from installing dev tools
+          \end{itemize}
+        \item Install the groups from within your source repo:
+          \begin{minted}{shell-session}
+            $ uv pip install --group dev
+          \end{minted}
+      \end{itemize}
+    \end{column}
+    \hfill
+    \begin{column}{0.38\textwidth}
+      \begin{minted}{toml}
+        [dependency-groups]
+        tests = ["pytest", "pytest-cov"]
+        docs = ["sphinx"]
+        dev = [
+          "jupyter",
+          "pre-commit",
+          {include-group = "tests"},
+          {include-group = "docs"},
+        ]
+      \end{minted}
+    \end{column}
+  \end{columns}
+
+\end{splitframe}
+
+\begin{splitframe}[fragile]{CLI Scripts}{Example}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}
+        \setlength{\itemsep}{1em}
+        \item We can expose scripts in our package using the \texttt{pyproject.toml}
+          \texttt{[project.scripts]} section
+        \item Similarly: Entry points, that allow the creation of plugins, and cross-platform
+          compatibility
+          \begin{itemize}
+            \item [\textcolor{cpink}{\to}] See \href{https://setuptools.pypa.io/en/latest/userguide/entry_point.html}{{\footnotesize{\faExternalLink*}}\,Entry Points}
+          \end{itemize}
+      \end{itemize}
+    \end{column}
+    \hfill
+    \begin{column}{0.38\textwidth}
+      \begin{minted}{toml}
+        src/my_package/cli.py:
+      \end{minted}
+      \vspace{0.25em}
+      \begin{minted}{python}
+        def print_message():
+            print("Hello World!")
+            raise SystemExit(1)
+      \end{minted}
+      \vspace{1em}
+      \begin{minted}{toml}
+        pyproject.toml:
+      \end{minted}
+      \vspace{0.25em}
+      \begin{minted}{toml}
+        [project.scripts]
+        hello-world = "my_package.cli:print_message"
+      \end{minted}
+      \vspace{1em}
+      \begin{center}
+        \huge\textcolor{cpink}{\texttt{\textbf{Result}}}
+      \end{center}
+      \begin{minted}[escapeinside=||]{toml}
+        |\textbf{\textcolor{cpink}{\$}}| hello-world
+        Hello World!
+      \end{minted}
+    \end{column}
+  \end{columns}
+\end{splitframe}
+
+
+\begin{frame}{Further Reading: Packaging}
+  \begin{itemize}
+    \setlength{\itemsep}{1em}
+    \item \iref{https://agoose77.github.io/packaging-pyopp-2025/}{Packaging in Python (Angus Hollands)}
+    \item \iref{https://packaging.python.org/en/latest/}{Python Packaging User Guide}
+    \item \iref{https://www.pypa.io/en/latest/}{Python Packaging Authority}
+    \item \iref{https://hatch.pypa.io/latest/}{hatch}
+    \item \iref{https://docs.astral.sh/uv/}{uv}
+    \item \iref{https://mamba.readthedocs.io/en/latest/}{mamba}
+  \end{itemize}
+\end{frame}
