@@ -1,0 +1,33 @@
+\secslide{Testing}
+
+\begin{frame}{When Do We Need Tests?}
+  \begin{center}
+    \huge\textcolor{ccyan!90!cblack}{Imagine the following\dots}
+  \end{center}
+  \begin{itemize}
+    \item You have written a package with a lot of code, \eg, multiple scripts
+    \item You found a bug somewhere in your code
+    \item You have not thought of possible edge cases during development
+  \end{itemize}
+  \vspace{1em}
+  \begin{center}
+    \huge\textcolor{cpink!90!cblack}{\to{} You will need to investigate your codebase for
+    causes of the bug and even then the same bug may appear some time later}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Solution}
+  \begin{center}
+    \huge\textcolor{ccyan!90!cblack}{Write persistent tests \textbf{during development!}}\\
+    \uncover<2>{\huge\textcolor{ccyan!90!cblack}{(And \textbf{automate} them \to{} see CI)}}
+
+    \begin{tikzpicture}[remember picture, overlay]
+      \only<2>{
+        \node [anchor=south] at ([yshift=1cm]current page.south) {
+          \includegraphics[height=3cm]{graphics/automation_meme.png}
+        };
+      }
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
