@@ -307,4 +307,21 @@
   \end{tikzpicture}
 }
 
+\NewDocumentCommand \secslide { m O{\fontsize{2cm}{2cm}\selectfont} } {%
+  \section{#1}
+  {
+  \setbeamercolor{background canvas}{bg=cblack}
+  \setbeamercolor{normal text}{fg=cwhite, bg=}
+  \setbeamercolor{palette primary}{fg=cwhite, bg=}
+  \setbeamercolor{block body}{fg=cwhite, bg=}
+
+  \usebeamercolor[fg]{normal text}
+  \begin{frame}
+    \begin{tikzpicture}[remember picture, overlay]
+      \node [ccyan, font=\bfseries\ttfamily #2] at (current page.center) {#1};
+    \end{tikzpicture}
+  \end{frame}
+  }
+}
+
 \mode<all>
