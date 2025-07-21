@@ -177,7 +177,7 @@
         \item Similarly: Entry points, that allow the creation of plugins, and cross-platform
           compatibility
           \begin{itemize}
-            \item See \href{https://setuptools.pypa.io/en/latest/userguide/entry_point.html}{{\footnotesize{\faExternalLink*}}\,Entry Points}
+            \item [\textcolor{cpink}{\to}] See \href{https://setuptools.pypa.io/en/latest/userguide/entry_point.html}{{\footnotesize{\faExternalLink*}}\,Entry Points}
           \end{itemize}
       \end{itemize}
     \end{column}
@@ -212,3 +212,26 @@
     \end{column}
   \end{columns}
 \end{splitframe}
+
+\begin{darkframe}
+  \begin{center}
+    \uncover<2>{
+      \includegraphics[width=0.35\textwidth]{images/patrick.jpg}
+    }
+    \\[1.5em]
+    \begin{minipage}{0.8\textwidth}
+      \begin{minted}{python}
+        def f(x,y=0):return[x[i]+y if x[i]>0else y-x[i]for i in range(len(x))]
+      \end{minted}
+    \end{minipage}
+    \\[3em]
+    \uncover<2>{
+      \huge\textcolor{ccyan}{This runs, but do you trust it?}
+    }
+  \end{center}
+
+  \begin{tikzpicture}[remember picture, overlay]
+    \coordinate (pos) at ([xshift=-2cm, yshift=1cm]current page.south east);
+    \node [rotate around={30:(pos)}, align=center] at (pos) {Shamelessly taken from\\Stefan's talk :)};
+  \end{tikzpicture}
+\end{darkframe}
