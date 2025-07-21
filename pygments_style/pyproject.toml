@@ -7,7 +7,8 @@ name = "code_style"
 version = "v1.0.0"
 
 [tool.hatch.build.targets.wheel]
-include = ["code_style"]
+packages = ["code_style.py"]
 
 [project.entry-points."pygments.styles"]
 code = "code_style:CodeStyle"
+code-light = "code_style:CodeStyleLight"
