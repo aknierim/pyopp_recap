@@ -31,3 +31,46 @@
   \end{center}
 \end{frame}
 
+\begin{frame}{Test Levels}
+  \begin{description}[Operational Acceptance Testing]
+    \setlength{\itemsep}{1em}
+    \item [Unit Testing] Test single units (\ie, single functions or classes) of your software.
+    \item [Integration Testing] Test multiple components that depend on each other.
+    \item [System Testing] Test the entire software with respect to its requirements, \eg, I/O data.
+    \item [Operational Acceptance Testing] Give your software to the user to break it.
+  \end{description}
+  \vspace{0.5cm}
+  \uncover<2>{
+    \begin{center}
+      \includegraphics[height=3cm]{graphics/onedoesnot.jpg}
+    \end{center}
+  }
+\end{frame}
+
+\begin{frame}{What Do We Test For?}
+  \begin{center}
+    \huge\textcolor{ccyan}{This is probably the hardest part\dots}
+  \end{center}
+  \begin{itemize}
+    \setlength{\itemsep}{1em}
+    \item You will need to understand your code
+    \item You will need to verify how much and what parts of your code are covered by tests
+    \item Even then your code may not be guaranteed to work error-free
+    \item \emph{Good practice}: Every time you find a bug, add a unit test so it doesn't reappear
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Tools}
+  Shipped with Python:
+  \begin{description}
+    \item [\iref{https://docs.python.org/3/library/doctest.html}{doctest}] Allows you to write simple tests in the docstrings
+      of your functions.
+    \item [\iref{https://docs.python.org/3/library/unittest.html}{unittest}] Allows you to write regular unit tests,
+      \ie, separate functions and classes that test your code.
+  \end{description}
+  \vspace{0.5cm}
+  Further tools:
+  \begin{description}
+    \item [\iref{https://docs.pytest.org/en/stable/}{pytest}] Scalable, and easy to use test framework.
+  \end{description}
+\end{frame}
