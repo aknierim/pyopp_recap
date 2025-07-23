@@ -60,7 +60,9 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Tools}
+{
+  \usemintedstyle{code-light}
+\begin{frame}[fragile]{Tools}
   Shipped with Python:
   \begin{description}
     \item [\iref{https://docs.python.org/3/library/doctest.html}{doctest}] Allows you to write simple tests in the docstrings
@@ -69,8 +71,207 @@
       \ie, separate functions and classes that test your code.
   \end{description}
   \vspace{0.5cm}
-  Further tools:
-  \begin{description}
-    \item [\iref{https://docs.pytest.org/en/stable/}{pytest}] Scalable, and easy to use test framework.
+
+  Additional tools:
+  \begin{description}[\iref{https://coverage.readthedocs.io/en/7.9.2/}{Coverage.py}]
+    \item [\iref{https://docs.pytest.org/en/stable/}{pytest}] Scalable, extensible (\ie, through plugins), and easy to use test framework.
+    \item [\iref{https://coverage.readthedocs.io/en/7.9.2/}{Coverage.py}] A tool for measuring code coverage. Works well with \texttt{pytest}
+      if \iref{https://pytest-cov.readthedocs.io/en/latest/}{pytest-cov} is installed:
+      \begin{minted}{shell-session}
+        $ pytest --cov
+      \end{minted}
+    \item [\iref{https://tox.wiki/en/4.28.1/}{tox}] A generic virtual environment management and test command line tool. Can be used to:
+      \begin{itemize}
+        \item [\to] Check whether your package builds and installs in different envs
+        \item [\to] Run tests in each defined env, \eg, using \texttt{pytest}
+      \end{itemize}
+    \item [\iref{https://nox.thea.codes/en/stable/}{Nox}] Similar to \texttt{tox}, but uses standard Python files and decorators for configuration.
+      (For differences, see \iref{https://hynek.me/articles/why-i-like-nox/}{Why I Like Nox} by Hynek Schlawack)
   \end{description}
+\end{frame}
+}
+
+\begin{darkframe}[fragile]{pytest}
+  \begin{center}
+    \large\textcolor{ccyan}{An example taken from the \texttt{pytest} docs}
+  \end{center}
+  \vspace{0.25cm}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.28\textwidth}
+      \begin{minted}{python}
+        # test_sample.py
+        def inc(x):
+            return x + 1
+
+
+        def test_answer():
+            assert inc(3) == 5
+      \end{minted}
+    \end{column}
+    \hfill
+    \begin{column}{0.68\textwidth}
+      \footnotesize
+      % oh boi, the following caused me pain
+      \begin{minted}[escapeinside=||]{shell-session}
+        $ pytest test_sample.py
+        =========================== test session starts ============================
+        platform linux -- Python 3.x.y, pytest-8.x.y, pluggy-1.x.y
+        rootdir: /home/sweet/project
+        collected 1 item
+
+        test_sample.py |\textcolor{cred}{F}|                                                     |\textcolor{cred}{[100\%]}|
+
+        ================================= FAILURES =================================
+        |\textcolor{cred}{\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ test\_answer \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_}|
+
+            def test_answer():
+        >       assert inc(3) == 5
+        |\textcolor{cred}{E}|       |\textcolor{cred}{assert 4 == 5}|
+        |\textcolor{cred}{E}|        |\textcolor{cred}{+  where 4 = inc(3)}|
+
+        |\textcolor{cred}{test\_sample.py}|:6: AssertionError
+        |\textcolor{ccyan}{========================= short test summary info ==========================}|
+        |\textcolor{cred}{FAILED}| test_sample.py::test_answer - assert 4 == 5
+        |\textcolor{cred}{============================ 1 failed in 0.12s =============================}|
+      \end{minted}
+    \end{column}
+  \end{columns}
+\end{darkframe}
+
+\begin{splitframe}[fragile]{pytest}{pyproject.toml}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}
+        \setlength{\itemsep}{1em}
+        \item \texttt{pytest} runs all functions starting with \texttt{test\_} (or classes starting with \texttt{Test}).
+        \item Provide \texttt{pytest} with the file that contains the specific test functions you want to run.
+        \item If no arguments are provided to \texttt{pytest}, it looks for paths defined in \texttt{testpath} (if defined)
+          \begin{itemize}
+            \item [\to] Otherwise: Recursive search for files matching \texttt{test\_*.py} or \texttt{*\_test.py}
+          \end{itemize}
+        \item Prints are suppressed per default; use the \texttt{-s} flag to see prints:
+          {
+          \usemintedstyle{code-light}
+          \begin{minted}{shell-session}
+            $ pytest -s
+          \end{minted}
+          }
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \begin{minted}{toml}
+        [tool.pytest.ini_options]
+        testpaths = [
+          "tests",
+        ]
+        addopts = "--verbose"
+      \end{minted}
+    \end{column}
+  \end{columns}
+\end{splitframe}
+
+\begin{darkframe}[fragile]{Useful Feature: pytest Fixtures}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.38\textwidth}
+      \small
+      \begin{minted}{python}
+        # contents of test_append.py (pytest)
+        import pytest
+
+
+        # Arrange
+        @pytest.fixture
+        def first_entry():
+            return "a"
+
+
+        # Arrange
+        @pytest.fixture
+        def order(first_entry):
+            return [first_entry]
+
+
+        def test_string(order):
+            # Act
+            order.append("b")
+
+            # Assert
+            assert order == ["a", "b"]
+      \end{minted}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \small
+      \begin{minted}{python}
+        # radionets tests/conftest.py
+        import shutil
+
+        import pytest
+
+
+        @pytest.fixture(autouse=True, scope="session")
+        def test_suite_cleanup_thing():
+            yield
+
+            build = "./tests/build/"
+            print("Cleaning up tests.")
+
+            shutil.rmtree(build)
+      \end{minted}
+      \vspace{0.5cm}
+      \normalsize
+      \begin{itemize}
+        \item [\to] \texttt{pytest} fixtures provide defined, reliable and consistent context for the tests
+        \item [\to] Essentially code to be run before or after a test, \eg, to prepare objects, data, or files
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{darkframe}
+
+\begin{frame}{Testing: Good Practices}
+  \textcolor{ccyan}{\textbf{Test-driven development:}}
+  \begin{itemize}
+      \item [\to] Make testing part of your development process
+      \item [\to] Write tests \emph{before} implementing your code:
+      \begin{enumerate}
+        \item Specify what the code should do
+        \item Write tests that test those specifications
+        \item Implement the code
+      \end{enumerate}
+  \end{itemize}
+  \vspace{1em}
+  In reality this may not always be feasible, but\dots
+  \begin{itemize}
+    \item Always try to write tests for your code, especially for critical components
+    \item You can always add tests at a later time, in a separate commit
+    \item Always write tests when you found and fixed a bug to ensure it doesn't reappear
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Further Reading: Testing}
+  \begin{columns}[t,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+        \begin{itemize}
+          \setlength{\itemsep}{1em}
+          \item \iref{https://indico.desy.de/event/43817/sessions/19708/attachments/97952/134999/nikolai_testing_pyopp_aachen_25.06.2025.pdf}{Nikolai Krug's PYOPP Talk}
+          \item \iref{https://github.com/nikoladze/pyopp-pytest-tutorial}{Nikolai Krug's pytest Tutorial}
+          \item \iref{https://docs.python.org/3/library/doctest.html}{doctest}
+          \item \iref{https://docs.python.org/3/library/unittest.html}{unittest}
+          \item \iref{https://docs.pytest.org/en/stable/}{pytest}
+          \item \iref{https://coverage.readthedocs.io/en/7.9.2/}{Coverage.py}
+          \item \iref{https://tox.wiki/en/4.28.1/}{tox}
+        \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}
+        \setlength{\itemsep}{1em}
+        \item \iref{https://nox.thea.codes/en/stable/}{Nox} and \iref{https://hynek.me/articles/why-i-like-nox/}{Why I Like Nox}
+        \item \iref{https://pytest-xdist.readthedocs.io/}{pytest-xdist}
+        \item \iref{https://pytest-regressions.readthedocs.io/}{pytest-regression}
+        \item \iref{https://pytest-mock.readthedocs.io/}{pytest-mock}
+        \item \iref{https://hypothesis.readthedocs.io/}{pytest-hypothesis}
+        \item \iref{https://pytest-order.readthedocs.io/en/latest/}{pytest-order}
+        \item \iref{https://henryiii.github.io/se-for-sci/content/week03/testing.html}{Intro To Testing} by Henry Schreiner
+      \end{itemize}
+    \end{column}
+  \end{columns}
 \end{frame}
