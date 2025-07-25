@@ -6,6 +6,8 @@ build-backend = "hatchling.build"
 name = "code_style"
 version = "v1.0.0"
 
+dependencies = ["pygments"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["code_style.py"]
 
